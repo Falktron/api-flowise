@@ -1,33 +1,15 @@
-# sveltekit
+# README
 
-This repo contains code for a SvelteKit application generated using the [`create-svelte`](https://github.com/sveltejs/kit/tree/master/packages/create-svelte) package.
+This is the [Express](https://expressjs.com) [Hello world](https://expressjs.com/en/starter/hello-world.html) example on [Render](https://render.com).
 
-To create your own SvelteKit project, you can either
+The app in this repo is deployed at [https://express.onrender.com](https://express.onrender.com).
 
-- [Create your own repo from this template](https://github.com/render-examples/sveltekit/generate) and modify it for your needs
-- Create a new SvelteKit project by following the [SvelteKit Getting Started Guide](https://kit.svelte.dev/docs) and then making a few small modifications as shown in [this commit](https://github.com/render-examples/sveltekit/commit/3ea50803f118da041745fd8cb51094972ac87f3c) to deploy it to Render as a Node.js service.
+## Deployment
 
-## Developing
+See https://render.com/docs/deploy-node-express-app or follow the steps below:
 
-Once you've created a project and installed dependencies with `npm install` (or `pnpm install` or `yarn`), start a development server:
+Create a new web service with the following values:
+  * Build Command: `yarn`
+  * Start Command: `node app.js`
 
-```bash
-npm run dev
-
-# or start the server and open the app in a new browser tab
-npm run dev -- --open
-```
-
-## Building
-
-```bash
-npm run build
-```
-
-> You can preview the built app with `npm run preview`. This should _not_ be used to serve your app in production.
-
-## Deploying to Render
-
-Follow the deploy instructions at https://render.com/docs/deploy-sveltekit
-
-[![Deploy to Render](https://render.com/images/deploy-to-render-button.svg)](https://render.com/deploy?repo=https://github.com/render-examples/sveltekit)
+That's it! Your web service will be live on your Render URL as soon as the build finishes.
