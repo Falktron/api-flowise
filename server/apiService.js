@@ -13,9 +13,23 @@ const pool = new pg.Pool({
   port: process.env.DATABASE_PORT,
 });
 
+app.get('/test', async (req, res) => {
+  try {
+    console.log('Request received for /result endpoint');
+    const result = await pool.query(
+      'SELECT results FROM pipeline',
+    );
+    console.log('Query executed successfully');
+    console.log('Result:', result.rows);
+    res.json(result.rows);
+  } catch (error) {
+    console.error('Error fetching data:', error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+});
 
 
-app.get('/result', async (req, res) => {
+app.get('/audience', async (req, res) => {
   try {
     console.log('Request received for /result endpoint');
     const result = await pool.query(
