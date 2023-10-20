@@ -13,6 +13,7 @@ const pool = new pg.Pool({
   port: process.env.DATABASE_PORT,
 });
 
+
 app.get('/test', async (req, res) => {
   try {
     console.log('Request received for /result endpoint');

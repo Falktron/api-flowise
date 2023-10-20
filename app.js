@@ -5,14 +5,30 @@ const pg = require('pg');
 
 
 const pool = new pg.Pool({
-  user: process.env.DATABASE_USERNAME ,
-  password: process.env.DATABASE_PASSWORD ,
+  user: process.env.DATABASE_USERNAME,
+  password: process.env.DATABASE_PASSWORD,
   host: process.env.DATABASE_HOST,
   database: process.env.DATABASE_NAME,
   port: process.env.DATABASE_PORT,
 });
 
 app.get("/", (req, res) => res.type('html').send(html));
+
+
+app.get('/test', async (req, res) => {
+  try {
+    console.log('Request received for /result endpoint');
+    const result = await pool.query(
+      'SELECT results FROM pipeline',
+    );
+    console.log('Query executed successfully');
+    console.log('Result:', result.rows);
+    res.json(result.rows);
+  } catch (error) {
+    console.error('Error fetching data:', error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+});
 
 const server = app.listen(port, () => console.log(`Example app listening on port ${port}!`));
 
