@@ -1,3 +1,4 @@
+require('dotenv').config(); // Add this line at the top of your file
 const express = require("express");
 const app = express();
 const port = process.env.PORT || 3001;
@@ -5,10 +6,10 @@ const pg = require('pg');
 
 
 const pool = new pg.Pool({
-  user: process.env.DATABASE_USERNAME,
-  password: process.env.DATABASE_PASSWORD,
+  user: process.env.DATABASE_USERNAME  ,
+  password: process.env.DATABASE_PASSWORD ,
   host: process.env.DATABASE_HOST,
-  database: process.env.DATABASE_NAME,
+  database: process.env.DATABASE_NAME ,
   port: process.env.DATABASE_PORT,
 });
 
@@ -21,8 +22,21 @@ app.get('/test', async (req, res) => {
     const result = await pool.query(
       'SELECT results FROM pipeline',
     );
-    console.log('Query executed successfully');
-    console.log('Result:', result.rows);
+    res.json(result.rows);
+  } catch (error) {
+    console.error('Error fetching data:', error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+});
+
+app.get('/result', async (req, res) => {
+  try {
+    console.log('Request received for /result endpoint');
+    const { project_id, pipeline_name } = req.query; // Assuming the parameters are passed as query parameters in the URL
+    const result = await pool.query(
+      'SELECT results FROM pipeline WHERE project_id = $1 AND pipeline_name = $2',
+      [project_id, pipeline_name] // Pass the parameters as an array in the same order as the placeholders ($1, $2, etc.)
+    );
     res.json(result.rows);
   } catch (error) {
     console.error('Error fetching data:', error);
