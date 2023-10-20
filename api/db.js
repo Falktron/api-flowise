@@ -1,11 +1,11 @@
 const { Database } = require('pg-promise');
 
 const connectionDetails = {
-    user: process.env.DATABASE_USERNAME  || 'flowise',
-    password: process.env.DATABASE_PASSWORD ||'Change_this_password',
-    host: process.env.DATABASE_HOST|| 'cxo2.mium.chat',
-    database: process.env.DATABASE_NAME||'flowise',
-    port: process.env.DATABASE_PORT||'5432',
+    user: process.env.DATABASE_USERNAME ,
+    password: process.env.DATABASE_PASSWORD,
+    host: process.env.DATABASE_HOST,
+    database: process.env.DATABASE_NAME,
+    port: process.env.DATABASE_PORT,
 };
 
 const db = new Database(connectionDetails);
