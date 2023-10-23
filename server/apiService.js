@@ -1,25 +1,28 @@
 import express from 'express';
 import pg from 'pg';
 
-
 const app = express();
 
-
 const pool = new pg.Pool({
-  user: process.env.DATABASE_USERNAME ,
-  password: process.env.DATABASE_PASSWORD ,
+  user: process.env.DATABASE_USERNAME,
+  password: process.env.DATABASE_PASSWORD,
   host: process.env.DATABASE_HOST,
   database: process.env.DATABASE_NAME,
   port: process.env.DATABASE_PORT,
 });
 
+// Enable CORS
+app.use((req, res, next) => {
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+  next();
+});
 
 app.get('/test', async (req, res) => {
   try {
-    console.log('Request received for /result endpoint');
-    const result = await pool.query(
-      'SELECT results FROM pipeline',
-    );
+    console.log('Request received for /test endpoint');
+    const result = await pool.query('SELECT results FROM pipeline');
     console.log('Query executed successfully');
     console.log('Result:', result.rows);
     res.json(result.rows);
@@ -29,10 +32,9 @@ app.get('/test', async (req, res) => {
   }
 });
 
-
 app.get('/audience', async (req, res) => {
   try {
-    console.log('Request received for /result endpoint');
+    console.log('Request received for /audience endpoint');
     const result = await pool.query(
       'SELECT results FROM pipeline WHERE project_id = $1 AND pipeline_name = $2',
       [req.query.projectId, req.query.pipelineName]
@@ -46,7 +48,7 @@ app.get('/audience', async (req, res) => {
   }
 });
 
-const PORT = process.env.DATABASE_PORT|| 5000;
+const PORT = process.env.DATABASE_PORT || 5000;
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
 });
