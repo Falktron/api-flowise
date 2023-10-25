@@ -108,6 +108,16 @@ app.post('/marketing-research', async (req, res) => {
   }
 });
 
+app.post('/testa', async (req, res) => {
+  try {
+    const result = await fetchPrediction("http://75.119.157.23:3001/api/v1/prediction/7ee09abe-e4b6-436a-9523-a87808404c57", req.body);
+    res.json(result);
+  } catch (error) {
+    console.error("Error:", error);
+    res.status(500).json({ error: error.message });
+  }
+});
+
 app.get("/", (req, res) => res.type('html').send(html));
 
 
