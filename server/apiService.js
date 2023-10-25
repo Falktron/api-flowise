@@ -1,5 +1,6 @@
 import express from 'express';
 import pg from 'pg';
+import fetch from "node-fetch";
 
 const app = express();
 
@@ -45,6 +46,25 @@ app.get('/audience', async (req, res) => {
   } catch (error) {
     console.error('Error fetching data:', error);
     res.status(500).json({ error: 'Internal Server Error' });
+  }
+});
+
+app.post("/target-users", async (req, res) => {
+  try {
+    const data = req.body;
+    const response = await fetch("http://75.119.157.23:3001/api/v1/prediction/df3a83b7-60da-43d6-ac2f-8939a5e86b72", {
+      headers: {
+        Authorization: "Bearer gDqzGFaOSHeOKe4Sc6Js1iZg1RuQERr8po8TgDKMGHE=",
+        "Content-Type": "application/json"
+      },
+      method: "POST",
+      body: JSON.stringify(data)
+    });
+    const result = await response.json();
+    res.json(result);
+  } catch (error) {
+    console.error("Error:", error);
+    res.status(500).json({ error: "Internal server error" });
   }
 });
 
