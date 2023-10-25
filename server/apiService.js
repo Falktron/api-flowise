@@ -68,6 +68,26 @@ app.post("/target-users", async (req, res) => {
   }
 });
 
+app.post("/target-users", async (req, res) => {
+  try {
+    const response = await fetch("http://75.119.157.23:3001/api/v1/prediction/df3a83b7-60da-43d6-ac2f-8939a5e86b72", {
+      headers: {
+        Authorization: "Bearer gDqzGFaOSHeOKe4Sc6Js1iZg1RuQERr8po8TgDKMGHE=",
+        "Content-Type": "application/json"
+      },
+      method: "POST",
+      body: JSON.stringify(req.body)
+    });
+
+    if (response.ok) res.json(await response.json());
+    else throw new Error("Error fetching data from the API");
+  } catch (error) {
+    console.error("Error:", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+});
+
+
 
 app.post("/business-model", async (req, res) => {
   try {
@@ -80,8 +100,8 @@ app.post("/business-model", async (req, res) => {
       method: "POST",
       body: JSON.stringify(data)
     });
-    const result = await response.json();
-    res.json(result);
+    if (response.ok) res.json(await response.json());
+    else throw new Error("Error fetching data from the API");
   } catch (error) {
     console.error("Error:", error);
     res.status(500).json({ error: "Internal server error" });
@@ -99,8 +119,8 @@ app.post("/marketing-research", async (req, res) => {
       method: "POST",
       body: JSON.stringify(data)
     });
-    const result = await response.json();
-    res.json(result);
+    if (response.ok) res.json(await response.json());
+    else throw new Error("Error fetching data from the API");
   } catch (error) {
     console.error("Error:", error);
     res.status(500).json({ error: "Internal server error" });
