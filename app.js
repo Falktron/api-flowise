@@ -1,10 +1,19 @@
-require('dotenv').config(); // Add this line at the top of your file
+require('dotenv').config();
 const express = require("express");
 const app = express();
 const port = process.env.PORT || 3001;
 const pg = require('pg');
+const cors = require('cors');
 
 
+// Enable CORS for all routes
+app.use(cors({
+  origin: 'http://localhost:5000',
+}));
+
+app.use(express.json());
+
+const TIMEOUT_DURATION = 10 * 60 * 1000; // 10 minutes in milliseconds
 
 const pool = new pg.Pool({
   user: process.env.DATABASE_USERNAME,
@@ -15,15 +24,6 @@ const pool = new pg.Pool({
 });
 
 
-
-
-// Enable CORS
-app.use((req, res, next) => {
-  res.setHeader('Access-Control-Allow-Origin', '*');
-  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
-  next();
-});
 
 app.get('/test', async (req, res) => {
   try {
@@ -54,59 +54,84 @@ app.get('/audience', async (req, res) => {
   }
 });
 
-const fetchPrediction = async (url, data) => {
-  try {
-    const response = await fetch(url, {
-      headers: {
-        Authorization: "Bearer gDqzGFaOSHeOKe4Sc6Js1iZg1RuQERr8po8TgDKMGHE=",
-        "Content-Type": "application/json"
-      },
-      method: "POST",
-      body: JSON.stringify(data)
-    });
-    if (response.ok) {
-      return await response.json();
-    } else {
-      throw new Error("Error fetching data from the API");
-    }
-  } catch (error) {
-    console.error("Error:", error);
-    throw new Error("Internal server error");
-  }
-};
 
-app.post('/target-users', async (req, res) => {
-  console.log("gola");
+async function fetchData(url, data) {
+  const response = await fetch(url, {
+    headers: {
+      Authorization: "Bearer evRkGy3yUTuENMui2zeeRbFdo5nGsqnsi9fYbKzLLVk=",
+      "Content-Type": "application/json",
+    },
+    method: "POST",
+    body: JSON.stringify(data),
+  });
+
+  if (response.status !== 200) {
+    throw new Error("Failed to fetch data from the API");
+  }
+
+  return response.json();
+}
+
+app.post("/target-users-local", async (req, res) => {
   try {
-    
-    const result = await fetchPrediction("http://75.119.157.23:3001/api/v1/prediction/df3a83b7-60da-43d6-ac2f-8939a5e86b72", req.body);
-    console.log(req.body);
+    const result = await fetchData(
+      "http://localhost:3000/api/v1/prediction/b2dfaf1b-7e4d-4a99-8f84-2d8fa4527b2c",
+      req.body
+    );
+    console.log(result);
     res.json(result);
   } catch (error) {
     console.error("Error:", error);
-    res.status(500).json({ error: error.message });
+    res.status(500).json({ error: "Internal Server Error" });
   }
 });
 
-app.post('/business-model', async (req, res) => {
+
+app.post("/target-users", async (req, res) => {
   try {
-    const result = await fetchPrediction("http://75.119.157.23:3001/api/v1/prediction/58f9feec-0b72-4f4a-9d29-bf5671c976a2", req.body);
+    const result = await fetchData(
+      "http://75.119.157.23:3001/api/v1/prediction/df3a83b7-60da-43d6-ac2f-8939a5e86b72",
+      req.body
+    );
+    console.log(result);
     res.json(result);
   } catch (error) {
     console.error("Error:", error);
-    res.status(500).json({ error: error.message });
+    res.status(500).json({ error: "Internal Server Error" });
   }
 });
 
-app.post('/marketing-research', async (req, res) => {
+app.post("/marketing-research", async (req, res) => {
   try {
-    const result = await fetchPrediction("http://75.119.157.23:3001/api/v1/prediction/afa6f22a-60f4-4a13-a644-d522ed749562", req.body);
+    const result = await fetchData(
+      "http://75.119.157.23:3001/api/v1/prediction/afa6f22a-60f4-4a13-a644-d522ed749562",
+      req.body
+    );
+    console.log(result);
     res.json(result);
   } catch (error) {
     console.error("Error:", error);
-    res.status(500).json({ error: error.message });
+    res.status(500).json({ error: "Internal Server Error" });
   }
 });
+
+app.post("/business-model", async (req, res) => {
+  try {
+    const result = await fetchData(
+      "http://75.119.157.23:3001/api/v1/prediction/58f9feec-0b72-4f4a-9d29-bf5671c976a2",
+      req.body
+    );
+    console.log(result);
+    res.json(result);
+  } catch (error) {
+    console.error("Error:", error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+});
+
+
+
+/*
 
 app.post('/testa', async (req, res) => {
   try {
@@ -116,15 +141,14 @@ app.post('/testa', async (req, res) => {
     console.error("Error:", error);
     res.status(500).json({ error: error.message });
   }
-});
+});*/
 
 app.get("/", (req, res) => res.type('html').send(html));
 
-
 const server = app.listen(port, () => console.log(`Example app listening on port ${port}!`));
 
-server.keepAliveTimeout = 120 * 1000;
-server.headersTimeout = 120 * 1000;
+server.keepAliveTimeout = TIMEOUT_DURATION
+server.headersTimeout = TIMEOUT_DURATION
 
 const html = `
 <!DOCTYPE html>
