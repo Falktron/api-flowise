@@ -3,13 +3,12 @@ const express = require("express");
 const app = express();
 const port = process.env.PORT || 3001;
 const pg = require('pg');
-const cors = require('cors');
 const axios = require('axios');
 
 // Enable CORS for all routes
-app.use(cors({
+/*app.use(cors({
   origin: 'http://localhost:5000',
-}));
+})); */
 
 app.use(express.json());
 
