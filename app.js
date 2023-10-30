@@ -36,12 +36,12 @@ app.get('/test', async (req, res) => {
   }
 });
 
-app.get('/audience', async (req, res) => {
+app.get('/result', async (req, res) => {
   try {
     console.log('Request received for /audience endpoint');
     const result = await pool.query(
       'SELECT results FROM pipeline WHERE project_id = $1 AND pipeline_name = $2',
-      [req.query.projectId, req.query.pipelineName]
+      [req.query.project_id, req.query.pipeline_name]
     );
     console.log('Query executed successfully');
     console.log('Result:', result.rows);
