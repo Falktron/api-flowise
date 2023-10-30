@@ -4,7 +4,7 @@ const app = express();
 const port = process.env.PORT || 3001;
 const pg = require('pg');
 const cors = require('cors');
-
+const axios = require('axios');
 
 // Enable CORS for all routes
 app.use(cors({
@@ -13,7 +13,7 @@ app.use(cors({
 
 app.use(express.json());
 
-const TIMEOUT_DURATION = 10 * 60 * 1000; // 10 minutes in milliseconds
+const TIMEOUT_DURATION = 20 * 60 * 1000; // 10 minutes in milliseconds
 
 const pool = new pg.Pool({
   user: process.env.DATABASE_USERNAME,
@@ -22,8 +22,6 @@ const pool = new pg.Pool({
   database: process.env.DATABASE_NAME,
   port: process.env.DATABASE_PORT,
 });
-
-
 
 app.get('/test', async (req, res) => {
   try {
@@ -54,28 +52,30 @@ app.get('/audience', async (req, res) => {
   }
 });
 
-
 async function fetchData(url, data) {
-  const response = await fetch(url, {
-    headers: {
-      Authorization: "Bearer evRkGy3yUTuENMui2zeeRbFdo5nGsqnsi9fYbKzLLVk=",
-      "Content-Type": "application/json",
-    },
-    method: "POST",
-    body: JSON.stringify(data),
-  });
+  try {
+    const response = await axios.post(url, data, {
+      headers: {
+        Authorization: 'Bearer gDqzGFaOSHeOKe4Sc6Js1iZg1RuQERr8po8TgDKMGHE=',
+        'Content-Type': 'application/json',
+      },
+    });
 
-  if (response.status !== 200) {
-    throw new Error("Failed to fetch data from the API");
+    if (response.status !== 200) {
+      throw new Error('Failed to fetch data from the API');
+    }
+
+    return response.data;
+  } catch (error) {
+    console.error('Error:', error);
+    throw new Error('Internal Server Error');
   }
-
-  return response.json();
 }
 
 app.post("/target-users-local", async (req, res) => {
   try {
     const result = await fetchData(
-      "http://localhost:3000/api/v1/prediction/b2dfaf1b-7e4d-4a99-8f84-2d8fa4527b2c",
+      "http://75.119.157.23:3001/api/v1/prediction/42b318aa-e29b-4cf7-9049-6bfa63271a3d",
       req.body
     );
     console.log(result);
@@ -131,24 +131,13 @@ app.post("/business-model", async (req, res) => {
 
 
 
-/*
 
-app.post('/testa', async (req, res) => {
-  try {
-    const result = await fetchPrediction("http://75.119.157.23:3001/api/v1/prediction/7ee09abe-e4b6-436a-9523-a87808404c57", req.body);
-    res.json(result);
-  } catch (error) {
-    console.error("Error:", error);
-    res.status(500).json({ error: error.message });
-  }
-});*/
-
-app.get("/", (req, res) => res.type('html').send(html));
+// Remaining routes...
 
 const server = app.listen(port, () => console.log(`Example app listening on port ${port}!`));
 
-server.keepAliveTimeout = TIMEOUT_DURATION
-server.headersTimeout = TIMEOUT_DURATION
+server.keepAliveTimeout = TIMEOUT_DURATION;
+server.headersTimeout = TIMEOUT_DURATION;
 
 const html = `
 <!DOCTYPE html>
@@ -199,4 +188,4 @@ const html = `
     </section>
   </body>
 </html>
-`
+`;
