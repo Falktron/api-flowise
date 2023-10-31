@@ -131,6 +131,21 @@ app.post("/business-model", async (req, res) => {
 
 
 
+app.post("/brand-identity", async (req, res) => {
+  try {
+    const result = await fetchData(
+      "http://75.119.157.23:3001/api/v1/prediction/dca12210-60f5-44b1-af00-4860cb37c8ad",
+      req.body
+    );
+    console.log(result);
+    res.json(result);
+  } catch (error) {
+    console.error("Error:", error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+});
+
+
 
 // Remaining routes...
 
