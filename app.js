@@ -55,6 +55,7 @@ app.get('/result', async (req, res) => {
 async function fetchData(url, data) {
   try {
     const response = await axios.post(url, data, {
+      timeout: TIMEOUT_DURATION,
       headers: {
         Authorization: 'Bearer gDqzGFaOSHeOKe4Sc6Js1iZg1RuQERr8po8TgDKMGHE=',
         'Content-Type': 'application/json',
