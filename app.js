@@ -13,7 +13,7 @@ app.use(cors({
 
 app.use(express.json());
 
-const TIMEOUT_DURATION = 20 * 60 * 1000; // 10 minutes in milliseconds
+const TIMEOUT_DURATION = 80 * 60 * 1000; // 10 minutes in milliseconds
 
 const pool = new pg.Pool({
   user: process.env.DATABASE_USERNAME,
